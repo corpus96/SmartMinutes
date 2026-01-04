@@ -1,9 +1,10 @@
 import sys
+import json
 from pathlib import Path
 
 from video_utils import extract_audio
 from transcribe import transcribe_audio
-from summarize import summarize_text
+from summarize import summarize_segments
 
 def main():
     if(len(sys.argv) < 2):
@@ -25,24 +26,35 @@ def main():
     audio_dir.mkdir(exist_ok=True)
 
     audio_path = audio_dir / "audio.wav"
-    transcribe_path = data_dir / "transcript.txt"
-    summary_path = data_dir / "summary.txt"
+    transcript_txt_path = data_dir / "transcript.txt"
+    highlights_json_path = data_dir / "highlights.json"
+    summary_txt_path = data_dir / "summary.txt"
     
 
     print("Extracting audio")
     extract_audio(video_path, audio_path)
 
     print("Transcribing audio")
-    transcript = transcribe_audio(audio_path)
-    transcribe_path.write_text(transcript, encoding="utf-8")
+    segments = transcribe_audio(audio_path)
+    # Expected format:
+    # [
+    #   {"start": float, "end": float, "text": str},
+    #   ...
+    # ]
 
-    print("Creating summary")
-    summary = summarize_text(transcript)
-    summary_path.write_text(summary, encoding="utf-8")
+    # Save full transcript (TXT)
+    full_text = " ".join(s["text"] for s in segments)
+    transcript_txt_path.write_text(full_text, encoding="utf-8")
+
+    highlights = summarize_segments(segments)
+
+    with open(highlights_json_path, "w", encoding="utf-8") as f:
+        json.dump(highlights, f, ensure_ascii=False, indent=2)
 
     print("Done!")
-    print(f"Transcript: {transcribe_path}")
-    print(f"Summary: {summary_path}")
+    print(f"Transcript: {transcript_txt_path}")
+    print(f"Highlights (timestamps): {highlights_json_path}")
+    print(f"Summary: {summary_txt_path}")
 
 if __name__ == "__main__":
     main()
