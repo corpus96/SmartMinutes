@@ -18,7 +18,7 @@ def transcribe_audio(audio_path):
     #Creating faster_whisper model
     model = WhisperModel(
         "small",
-        device="cpu"
+        device="cpu",
         compute_type="int8"
     )
 
