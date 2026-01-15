@@ -20,15 +20,23 @@ def main():
         print("ERROR: INPUT FILE NOT FOUND")
         sys.exit(1)
 
-    data_dir = Path("data")
-    audio_dir = data_dir / "audio"
-    data_dir.mkdir(exist_ok=True)
+    output_dir = Path("output")
+    audio_dir = output_dir / "audio"
+    transcript_dir = output_dir / "transcripts"
+    highlights_dir = output_dir / "highlights"
+    summary_dir = output_dir / "summaries"
+
+    #Creating above directories if they don't exist
+    output_dir.mkdir(exist_ok=True)
     audio_dir.mkdir(exist_ok=True)
+    transcript_dir.mkdir(exist_ok=True)
+    highlights_dir.mkdir(exist_ok=True)
+    summary_dir.mkdir(exist_ok=True)
 
     audio_path = audio_dir / "audio.wav"
-    transcript_txt_path = data_dir / "transcript.txt"
-    highlights_json_path = data_dir / "highlights.json"
-    summary_txt_path = data_dir / "summary.txt"
+    transcript_txt_path = transcript_dir / "transcript.txt"
+    highlights_json_path = highlights_dir / "highlights.json"
+    summary_txt_path = summary_dir / "summary.txt"
     
 
     print("Extracting audio")

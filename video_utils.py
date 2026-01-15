@@ -21,8 +21,9 @@ def extract_audio(video_path: Path, output_audio_path: Path):
         "-y", #Overwrite output
         "-i", str(video_path), #input video
         "-vn", #strip audio from video
-        "-acodec", "pcm_s161e", #wav format
-        "-ar", "1", #mono
+        "-acodec", "pcm_s16le", #wav format (16-bit PCM little-endian)
+        "-ar", "16000", #sample rate (16kHz, good for speech recognition)
+        "-ac", "1", #mono channel
         str(output_audio_path)
     ]
 

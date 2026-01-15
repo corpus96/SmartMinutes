@@ -1,0 +1,7 @@
+[
+  "\\b(hello|hi|hey|good morning|good afternoon|good evening)\\b",
+  "\\b(thank you|thanks|thank)\\b.*\\b(coming|for coming)\\b",
+  "\\b(let'?s|let us)\\s+(get started|begin|start)\\b",
+  "\\b(welcome|welcomed)\\b",
+  "^(hello|hi|hey|thanks|thank you)"
+]

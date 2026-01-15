@@ -17,7 +17,7 @@ def cut_video(
         video_path: Path,
         highlights_path: Path,
         output_dir: Path,
-        padding_seconds: float = 1.0
+        padding_seconds: float = 2.0
 ):
     if not video_path.exists():
         raise FileNotFoundError(f"Video not found: {video_path}")
@@ -27,7 +27,7 @@ def cut_video(
     
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(highlights_path, "r", encoding="uft-8") as file:
+    with open(highlights_path, "r", encoding="utf-8") as file:
         highlights = json.load(file)
 
     if not highlights:
