@@ -1,9 +1,19 @@
+
 [
   "problem",
   "issue",
-  "noticing",
-  "trend",
+  "challenge",
   "concern",
-  "absent",
-  "missing"
+  "risk",
+  "gap",
+  "deficiency",
+  "blocker",
+  "pending",
+  "outstanding",
+  "unresolved",
+  "missing",
+  "incomplete",
+  "anomaly",
+  "flag",
+  "follow-up"
 ]

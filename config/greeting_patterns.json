@@ -1,7 +1,37 @@
+
 [
   "\\b(hello|hi|hey|good morning|good afternoon|good evening)\\b",
   "\\b(thank you|thanks|thank)\\b.*\\b(coming|for coming)\\b",
   "\\b(let'?s|let us)\\s+(get started|begin|start)\\b",
   "\\b(welcome|welcomed)\\b",
-  "^(hello|hi|hey|thanks|thank you)"
+  "^(hello|hi|hey|thanks|thank you)",
+
+  "\\b(hi there|hello there|hey there)\\b",
+  "\\b(howdy)\\b",
+  "\\b(good\\s*(morning|afternoon|evening),?\\s*(everyone|all|team|folks|y'all))\\b",
+  "\\b(morning|afternoon|evening)\\s*(everyone|all|team|folks|y'all)\\b",
+  "\\b(nice|great|good|pleased|happy|glad)\\s+to\\s+(meet|see)\\s+(you|everyone|all|y'all|folks|team)\\b",
+  "\\b(great|good|glad|happy)\\s+to\\s+be\\s+here\\b",
+  "\\b(great|awesome)\\s+to\\s+see\\s+(everyone|you\\s+all|y'all)\\b",
+  "\\b(pleasure)\\s+to\\s+(meet|see)\\b",
+  "\\b(long\\s+time\\s+no\\s+see)\\b",
+
+  "\\b(how('?s| is) it going|how are (you|y'all|everyone)|how are we|how's everyone)\\b",
+  "\\b(hope|hoping)\\s+(you|y'all|everyone)\\s+(are|’re|\\'re|re)\\s+(doing\\s+well|well|great)\\b",
+  "\\b(hope\\s+you\\s+had\\s+a\\s+great\\s+(weekend|day))\\b",
+
+  "\\b(thanks|thank you)\\s+(all|everyone|team|folks)\\b",
+  "\\b(thanks|thank you)\\s+for\\s+(joining|joining\\s+us|being\\s+here|making\\s+the\\s+time|the\\s+invite|inviting\\s+me|the\\s+invitation)\\b",
+  "\\b(appreciate|appreciation)\\b.*\\b(everyone'?s|your)\\s+time\\b",
+  "\\b(so\\s+glad|really\\s+glad|happy)\\s+(you|everyone)\\s+could\\s+(join|make\\s+it|be\\s+here)\\b",
+
+  "\\b(welcome\\s+(back|everyone|aboard|all))\\b",
+  "^\\s*(good\\s*(morning|afternoon|evening)|hello|hi|hey|howdy)\\b",
+  "^\\s*(thanks|thank you|many thanks|much appreciated)\\b",
+
+  "\\b(let'?s|let us)\\s+(kick\\s*off|dive\\s*in|jump\\s*in|get\\s+rolling|get\\s+going|get\\s+underway)\\b",
+  "\\b(quick|brief)\\s+(hello|check[- ]?in)\\b",
+
+  "\\b(happy|glad)\\s+(monday|tuesday|wednesday|thursday|friday)\\b",
+  "\\b(happy\\s+new\\s+year|happy\\s+holidays)\\b"
 ]
