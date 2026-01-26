@@ -5,6 +5,7 @@ from pathlib import Path
 from video_utils import extract_audio
 from transcribe import transcribe_audio
 from summarize import summarize_segments
+from cut_video import cut_video
 
 def main():
     if(len(sys.argv) < 2):
@@ -25,6 +26,7 @@ def main():
     transcript_dir = output_dir / "transcripts"
     highlights_dir = output_dir / "highlights"
     summary_dir = output_dir / "summaries"
+    clips_dir = output_dir / "clips"
 
     #Creating above directories if they don't exist
     output_dir.mkdir(exist_ok=True)
@@ -32,6 +34,7 @@ def main():
     transcript_dir.mkdir(exist_ok=True)
     highlights_dir.mkdir(exist_ok=True)
     summary_dir.mkdir(exist_ok=True)
+    clips_dir.mkdir(exist_ok=True)
 
     audio_path = audio_dir / "audio.wav"
     transcript_txt_path = transcript_dir / "transcript.txt"
@@ -44,25 +47,29 @@ def main():
 
     print("Transcribing audio")
     segments = transcribe_audio(audio_path)
-    # Expected format:
-    # [
-    #   {"start": float, "end": float, "text": str},
-    #   ...
-    # ]
 
     # Save full transcript (TXT)
     full_text = " ".join(s["text"] for s in segments)
     transcript_txt_path.write_text(full_text, encoding="utf-8")
 
+    print("Creating higlights")
     highlights = summarize_segments(segments)
 
     with open(highlights_json_path, "w", encoding="utf-8") as f:
         json.dump(highlights, f, ensure_ascii=False, indent=2)
 
+    print("Cutting video based on highlights...")
+    cut_video(video_path, highlights_json_path, clips_dir)
+    
+    # Generate the expected output video path
+    original_name = video_path.stem
+    output_video_path = output_dir / f"summarize_{original_name}.mp4"
+
     print("Done!")
     print(f"Transcript: {transcript_txt_path}")
     print(f"Highlights (timestamps): {highlights_json_path}")
     print(f"Summary: {summary_txt_path}")
+    print(f"Summarized video: {output_video_path}")
 
 if __name__ == "__main__":
     main()

@@ -45,13 +45,3 @@ def merge_clips(clips_dir: Path, output_video: Path):
     
 
     print(f"Summarized video created: {output_video}")
-
-def main():
-    clips_dir = Path("data/clips")
-    output_video = Path("data/summarized_video.mp4")
-
-    merge_clips(clips_dir, output_video)
-
-
-if __name__ == "__main__":
-    main()

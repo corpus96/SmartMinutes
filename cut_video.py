@@ -31,13 +31,16 @@ def merge_clips(clips_dir: Path, output_video: Path):
     
     output_video.parent.mkdir(parents=True, exist_ok=True)
     
+    # Re-encode during merge to ensure consistent codecs and sync
     ffmpeg_command = [
         "ffmpeg",            # Executable binary
         "-y",                # Overwrite output
-        "-f", "concat",      # Format: concat demuxer
+        "-f", "concat",      # Format: concat
         "-safe", "0",        # Allow unsafe paths
         "-i", str(concat_file), # Text file list
-        "-c", "copy",        # Stream copy
+        "-c:v", "libx264",   # Re-encode video for consistency
+        "-c:a", "aac",       # Re-encode audio for consistency
+        "-avoid_negative_ts", "make_zero",  # Fix timestamp issues
         str(output_video)    # Output destination
     ]
     
@@ -68,13 +71,18 @@ def _cut_single_clip(
 
     output_file = output_dir / f"clip_{clip_number:02d}.mp4"
 
+    # Use input seeking (-ss before -i) for speed, but re-encode for sync
+    # This ensures audio/video stay in sync
     ffmpeg_command = [
         "ffmpeg",           # Executable binary
         "-y",               # Overwrite output
-        "-ss", str(start),  # Start offset
+        "-ss", str(start),  # Start offset (before input for faster seeking)
         "-i", str(video_path), # Input source
         "-t", str(duration),# Duration limit
-        "-c", "copy",       # Stream copy
+        "-c:v", "libx264",  # Re-encode video for sync
+        "-c:a", "aac",      # Re-encode audio for sync
+        "-avoid_negative_ts", "make_zero",  # Fix timestamp issues
+        "-strict", "experimental",
         str(output_file)    # Output destination
     ]
 
@@ -111,12 +119,42 @@ def _cleanup_clips(output_dir: Path) -> None:
     
     _delete_concat_file(output_dir)
 
+def _merge_overlapping_highlights(highlights: list, padding_seconds: float) -> list:
+    """Merge highlights that would overlap after padding is applied."""
+    if not highlights:
+        return []
+    
+    # Sort by start time
+    sorted_highlights = sorted(highlights, key=lambda x: x["start"])
+    merged = []
+    
+    for h in sorted_highlights:
+        if not merged:
+            merged.append(h.copy())
+            continue
+        
+        # Calculate padded boundaries
+        current_start = max(0, h["start"] - padding_seconds)
+        last_end = merged[-1]["end"] + padding_seconds
+        
+        # Check if this highlight overlaps or is adjacent to the last one
+        if current_start <= last_end:
+            # Merge: extend the end time and combine text
+            merged[-1]["end"] = max(merged[-1]["end"], h["end"])
+            merged[-1]["text"] += " " + h["text"]
+        else:
+            # No overlap, add as new highlight
+            merged.append(h.copy())
+    
+    return merged
+
 def cut_video(
         video_path: Path,
         highlights_path: Path,
         output_dir: Path,
         padding_seconds: float = 2.0,
-        auto_merge: bool = True 
+        auto_merge: bool = True,
+        output_video_name: Path = None
 ):
     if not video_path.exists():
         raise FileNotFoundError(f"Video not found: {video_path}")
@@ -133,9 +171,16 @@ def cut_video(
         print("No highlights found")
         return
 
-    # Creating a clip for each highlight
+    # Merge overlapping/adjacent highlights before cutting
+    # This prevents duplicate content and sync issues
+    merged_highlights = _merge_overlapping_highlights(highlights, padding_seconds)
+    
+    if len(merged_highlights) < len(highlights):
+        print(f"Merged {len(highlights)} highlights into {len(merged_highlights)} non-overlapping segments")
+
+    # Creating a clip for each merged highlight
     # All clips must be chronologically ordered
-    for i, h in enumerate(highlights, start=1):
+    for i, h in enumerate(merged_highlights, start=1):
         _cut_single_clip(video_path, h, i, output_dir, padding_seconds)
 
     print("All clips created.")
@@ -143,24 +188,16 @@ def cut_video(
     # Automatically merge all clips into a single video if requested
     # If auto merge is off, all clips are stored in the directory.
     if auto_merge:
-        merge_clips(output_dir, output_dir.parent / "summarized_video.mp4")
+        # Generate output video name from original video name if not provided
+        if output_video_name is None:
+            original_name = video_path.stem  # Get filename without extension
+            output_video_name = output_dir.parent / f"summarize_{original_name}.mp4"
+        else:
+            output_video_name = Path(output_video_name)
+        
+        merge_clips(output_dir, output_video_name)
         _cleanup_clips(output_dir)
     else:
         print("Auto-merge is off, keeping individual clips...")
         _delete_concat_file(output_dir)
         
-
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: python cut_video.py <video_path> <highlights.json>")
-        sys.exit(1)
-
-    video_path = Path(sys.argv[1])
-    highlights_path = Path(sys.argv[2])
-
-    output_dir = Path("output/clips")
-
-    cut_video(video_path, highlights_path, output_dir)
-
-if __name__ == "__main__":
-    main()
