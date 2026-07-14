@@ -2,8 +2,8 @@ import sys
 import json
 from pathlib import Path
 
-from video_utils import extract_audio
-from transcribe import transcribe_audio
+from Step_1_Transcribe_Video.extract_audio import extract_audio
+from Step_1_Transcribe_Video.transcribe import transcribe_audio
 from summarize import summarize_segments
 from cut_video import cut_video
 
@@ -41,7 +41,8 @@ def main():
     highlights_json_path = highlights_dir / "highlights.json"
     summary_txt_path = summary_dir / "summary.txt"
     
-
+    #Step 1 - Extract Audio
+ 
     print("Extracting audio")
     extract_audio(video_path, audio_path)
 

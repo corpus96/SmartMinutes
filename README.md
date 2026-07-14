@@ -6,7 +6,7 @@ SmartMinutes is a command-line tool that automatically turns a long video into a
 
 The pipeline (`run.py`) runs the following stages in order:
 
-1. **Audio extraction** (`video_utils.py`) — uses `ffmpeg` to pull a 16 kHz mono WAV out of the source video.
+1. **Audio extraction** (`Step_1_Transcribe_video/extract_audio.py`) — uses `ffmpeg` to pull a 16 kHz mono WAV out of the source video.
 2. **Transcription** (`transcribe.py`) — uses [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) (model `small`, CPU, `int8`) to produce timestamped transcript segments.
 3. **Highlight selection** (`summarize.py`) — scores segments by word frequency, expands the top segments with surrounding context, merges overlaps, and ensures a substantive opening segment is included (skipping greetings).
 4. **Clip cutting & merge** (`cut_video.py`) — cuts a clip for each highlight with `ffmpeg`, merges them chronologically into one video, and cleans up the intermediate clips.
