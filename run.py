@@ -21,7 +21,7 @@ def main():
         print("ERROR: INPUT FILE NOT FOUND")
         sys.exit(1)
 
-    output_dir = Path("output")
+    output_dir = Path("data/output")
     audio_dir = output_dir / "audio"
     transcript_dir = output_dir / "transcripts"
     highlights_dir = output_dir / "highlights"
@@ -39,7 +39,6 @@ def main():
     audio_path = audio_dir / "audio.wav"
     transcript_txt_path = transcript_dir / "transcript.txt"
     highlights_json_path = highlights_dir / "highlights.json"
-    summary_txt_path = summary_dir / "summary.txt"
     
     #Step 1 - Extract Audio
  
@@ -64,13 +63,10 @@ def main():
     
     # Generate the expected output video path
     original_name = video_path.stem
-    output_video_path = output_dir / f"summarize_{original_name}.mp4"
 
     print("Done!")
     print(f"Transcript: {transcript_txt_path}")
     print(f"Highlights (timestamps): {highlights_json_path}")
-    print(f"Summary: {summary_txt_path}")
-    print(f"Summarized video: {output_video_path}")
 
 if __name__ == "__main__":
     main()
